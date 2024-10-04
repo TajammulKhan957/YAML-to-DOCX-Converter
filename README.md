@@ -4,14 +4,15 @@ A web-based tool that converts YAML files into DOCX or PDF formats. This project
 
 ## Features
 
-- Convert YAML files to DOCX or PDF formats.
+- Convert YAML files to DOCX formats.
 - Simple drag-and-drop file upload interface.
 - Option to download the converted file instantly.
 - Responsive design with animations for an enhanced user experience.
 
 ## Demo
 
-![Demo Screenshot](./assets/demo.png) <!-- Replace with an actual screenshot path -->
+![Screenshot from 2024-10-04 16-20-04](https://github.com/user-attachments/assets/1403e0e9-64af-4cd1-80f0-0226e8197180)
+
 
 ## Tech Stack
 
