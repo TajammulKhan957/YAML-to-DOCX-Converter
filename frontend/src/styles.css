@@ -1,0 +1,81 @@
+body {
+    background: linear-gradient(to right, #eef2f3, #8e9eab);
+    font-family: 'Roboto', sans-serif;
+}
+
+.App {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-image {
+    width: 250px;
+    margin-bottom: 25px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.hero-image:hover {
+    transform: scale(1.05);
+}
+
+.hero-title {
+    font-weight: 700;
+    color: #0056d3;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: #6d7a8d;
+    transition: color 0.3s ease-in-out;
+}
+
+.hero-subtitle:hover {
+    color: #333;
+}
+
+.yaml-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    width: 80%;
+}
+
+button {
+    margin-top: 20px;
+}
+
+.selected-file {
+    width: 100%;
+}
+
+.upload-button {
+    background-color: #4caf50;
+    color: white;
+    border-radius: 10px;
+}
+
+.upload-button:hover {
+    background-color: #45a049;
+}
+
+.submit-button {
+    background-color: #0056d3;
+    color: white;
+    border-radius: 12px;
+    padding: 12px 25px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #0041a8;
+    transform: scale(1.05);
+}

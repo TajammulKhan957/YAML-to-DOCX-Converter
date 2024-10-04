@@ -1,0 +1,284 @@
+openapi: 3.0.0
+info:
+  title: Star App API
+  description: API to track skill progression across different roles in Data Engineering.
+  version: 1.0.0
+servers:
+  - url: https://api.starappr.com/v1
+  
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user with email and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                  description: User's email address.
+                password:
+                  type: string
+                  format: password
+                  example: "strongpassword123"
+                  description: User's password.
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for authentication.
+                  userId:
+                    type: string
+                    description: Unique identifier for the user.
+                  message:
+                    type: string
+                    example: "Login successful"
+        '400':
+          description: Bad request (e.g., missing or invalid fields)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid email or password."
+
+  /track:
+    get:
+      summary: Get all skill track
+      description: Retrieve a list of all skill tracks, such as "Track 1 - Foundational", "Track 2 - Programming".
+      responses:
+        '200':
+          description: A list of skill tracks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+        '400':
+          description: Bad request, failed to retrieve tracks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid request format. Unable to process tracks."
+
+  /track/{trackId}:
+    get:
+      summary: Get a specific track
+      description: Retrieve information about a specific skill track, including its sub-tracks and levels.
+      parameters:
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Details of a specific track
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+        '400':
+          description: Bad request, invalid track ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid track ID. Please provide a valid integer."
+
+  /track/{trackId}/subtrack:
+    get:
+      summary: Get sub-track for a specific track
+      description: Retrieve sub-tracks such as "Mathematics," "EXCEL," or "Programming" under a specific track.
+      parameters:
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of sub-tracks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubTrack'
+        '400':
+          description: Bad request, invalid track ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid track ID. Sub-tracks cannot be retrieved."
+
+  /track/{trackId}/level:
+    get:
+      summary: Get skill level for a specific track
+      description: Retrieve the levels (e.g., L1, L2, L3, etc.) for a specific track.
+      parameters:
+        - name: trackId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of skill levels for the track
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Level'
+        '400':
+          description: Bad request, invalid track ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid track ID. Levels cannot be retrieved."
+
+  /roles:
+    get:
+      summary: Get roles
+      description: Retrieve the list of roles (e.g., Solution Trainee, Solution Associate, Data Engineer, etc.).
+      responses:
+        '200':
+          description: A list of roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '400':
+          description: Bad request, failed to retrieve roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid request format. Unable to process roles."
+
+  /roles/{roleId}/track:
+    get:
+      summary: Get track for a specific role
+      description: Retrieve skill track for a given role.
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of skill track for a specific role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+        '400':
+          description: Bad request, invalid role ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 400
+                message: "Invalid role ID. Please provide a valid integer."
+
+components:
+  schemas:
+    Track:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        subTrack:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubTrack'
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Level'
+
+    SubTrack:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+
+    Level:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        rank:
+          type: integer
+
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        track:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

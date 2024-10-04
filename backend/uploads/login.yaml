@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Star API
+  description: API specification for user login.
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user with email and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                  description: User's email address.
+                password:
+                  type: string
+                  format: password
+                  example: "strongpassword123"
+                  description: User's password.
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for authentication.
+                  userId:
+                    type: string
+                    description: Unique identifier for the user.
+                  message:
+                    type: string
+                    example: "Login successful"
+        '400':
+          description: Bad request (e.g., missing or invalid fields)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid email or password."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred. Please try again later."
