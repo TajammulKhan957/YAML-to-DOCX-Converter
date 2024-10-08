@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 
 // Configure CORS to allow your Vercel frontend
-const allowedOrigins = ['https://yaml-to-docx-converter.vercel.app'];  // Update this to the correct Vercel domain
+const allowedOrigins = ['*'];  // Update this to the correct Vercel domain
 
 const corsOptions = {
     origin: function (origin, callback) {
