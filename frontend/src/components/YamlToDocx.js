@@ -7,6 +7,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DownloadIcon from '@mui/icons-material/Download';
 
 function YamlToDocx() {
+    const backendAPI = process.env.REACT_APP_BACKEND_URL;
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -27,7 +28,8 @@ function YamlToDocx() {
         setLoading(true);
 
         try {
-            const response = await axios.post('https://your-backend-app.up.railway.app/convert', formData, {
+            const response = await axios.post(`${backendAPI}/convert`, formData, {
+                // patient-miracle-production.up.railway.app
                 responseType: 'blob',
             });
 
