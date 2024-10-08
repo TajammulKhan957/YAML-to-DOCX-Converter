@@ -5,13 +5,12 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
-// Configure CORS to allow only your Vercel frontend to access the backend
-const allowedOrigins = ['https://yaml-to-docx-converter-git-main-tajammul-khans-projects.vercel.app'];
+// Configure CORS to allow your Vercel frontend
+const allowedOrigins = ['https://yaml-to-docx-converter.vercel.app'];  // Update this to the correct Vercel domain
 
 const corsOptions = {
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or Postman)
-        if (!origin) return callback(null, true);
+        if (!origin) return callback(null, true); // Allow requests like Postman without origin
         if (allowedOrigins.indexOf(origin) === -1) {
             const msg = 'CORS policy does not allow access from the specified origin.';
             return callback(new Error(msg), false);
@@ -20,9 +19,9 @@ const corsOptions = {
     },
 };
 
-app.use(cors(corsOptions)); // To allow cross-origin requests only from specified origins
+app.use(cors(corsOptions)); // Apply CORS middleware
 
-// Set up multer to store uploaded YAML files in the uploads folder
+// Set up multer to store uploaded YAML files
 const storage = multer.diskStorage({
     destination: './uploads/',
     filename: (req, file, cb) => {
@@ -42,6 +41,15 @@ app.post('/convert', upload.single('file'), (req, res) => {
 
     // Spawn a Python process to run the conversion script
     const pythonProcess = spawn('python3', ['app.py', filePath]);
+
+    // Capture the Python process's output
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`Python stdout: ${data}`);
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Python stderr: ${data}`);
+    });
 
     pythonProcess.on('close', (code) => {
         if (code !== 0) {
