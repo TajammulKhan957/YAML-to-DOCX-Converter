@@ -5,7 +5,7 @@ from docx import Document
 import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to allow requests from your frontend
+CORS(app, resources={r"/convert": {"origins": "https://yaml-to-docx-converter.vercel.app"}})
 
 # Function to add YAML data to DOCX
 def add_dict_to_docx(data, parent):
@@ -36,6 +36,10 @@ def add_dict_to_docx(data, parent):
         parent.add_paragraph(data)
 
 # Endpoint to handle file conversion
+@app.route('/convert', methods=['OPTIONS'])
+def handle_options():
+    return '', 200  # Respond with a 200 status for OPTIONS request
+
 @app.route('/convert', methods=['POST'])
 def convert_yaml_to_docx():
     if 'file' not in request.files:

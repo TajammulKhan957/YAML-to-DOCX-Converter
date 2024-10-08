@@ -29,7 +29,7 @@ function YamlToDocx() {
         try {
             // API call to backend for conversion
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/convert`, formData, {
-                responseType: 'blob',  // Expect a blob in response (the DOCX file)
+                responseType: 'blob', 
             });
 
             // Create a download link and trigger the download
@@ -41,6 +41,10 @@ function YamlToDocx() {
             link.click();
         } catch (error) {
             console.error('Error during conversion:', error);
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+            }   
             alert('Failed to convert the file. Please try again.');
         } finally {
             setLoading(false);
