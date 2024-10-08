@@ -6,12 +6,11 @@ const cors = require('cors');
 const app = express();
 
 const corsOptions = {
-    origin: 'https://yaml-to-docx-converter.vercel.app', // Update this to your frontend's URL
+    origin: '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
-
-app.use(cors(corsOptions)); // Apply CORS middleware
+app.use(cors(corsOptions));
 
 // Set up multer to store uploaded YAML files
 const storage = multer.diskStorage({
@@ -47,7 +46,7 @@ app.post('/convert', upload.single('file'), (req, res) => {
     const filePath = path.join(__dirname, 'uploads', req.file.filename);
 
     // Spawn a Python process to run the conversion script
-    const pythonProcess = spawn('python', ['app.py', filePath]);
+    const pythonProcess = spawn('python3', ['app.py', filePath]);
 
     // Capture the Python process's output
     pythonProcess.stdout.on('data', (data) => {

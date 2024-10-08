@@ -28,7 +28,7 @@ function YamlToDocx() {
 
         try {
             // API call to backend for conversion
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/convert`, formData, {
+            const response = await axios.post(`https://patient-miracle-production.up.railway.app/convert`, formData, {
                 responseType: 'blob', 
             });
 
