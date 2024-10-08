@@ -5,18 +5,10 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
-// Configure CORS to allow your Vercel frontend
-const allowedOrigins = ['*'];  // Update this to the correct Vercel domain
-
 const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true); // Allow requests like Postman without origin
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'CORS policy does not allow access from the specified origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
+    origin: 'https://yaml-to-docx-converter.vercel.app', // Update this to your frontend's URL
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions)); // Apply CORS middleware
