@@ -7,7 +7,6 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DownloadIcon from '@mui/icons-material/Download';
 
 function YamlToDocx() {
-    // const backendAPI = process.env.REACT_APP_BACKEND_URL;
     const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -28,11 +27,12 @@ function YamlToDocx() {
         setLoading(true);
 
         try {
+            // API call to backend for conversion
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/convert`, formData, {
-                // patient-miracle-production.up.railway.app
-                responseType: 'blob',
+                responseType: 'blob',  // Expect a blob in response (the DOCX file)
             });
 
+            // Create a download link and trigger the download
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -41,6 +41,7 @@ function YamlToDocx() {
             link.click();
         } catch (error) {
             console.error('Error during conversion:', error);
+            alert('Failed to convert the file. Please try again.');
         } finally {
             setLoading(false);
         }

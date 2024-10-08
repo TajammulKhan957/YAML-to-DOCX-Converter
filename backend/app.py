@@ -1,17 +1,13 @@
-import sys
+from flask import Flask, request, send_file
+from flask_cors import CORS
 import yaml
 from docx import Document
 import os
 
-# Load YAML data from file passed as argument
-yaml_file = sys.argv[1]
-with open(yaml_file, 'r') as file:
-    yaml_data = yaml.safe_load(file)
+app = Flask(__name__)
+CORS(app)  # Enable CORS to allow requests from your frontend
 
-# Create a new Document
-document = Document()
-document.add_heading('YAML to DOCX', 0)
-
+# Function to add YAML data to DOCX
 def add_dict_to_docx(data, parent):
     if isinstance(data, dict):
         for key, value in data.items():
@@ -39,9 +35,41 @@ def add_dict_to_docx(data, parent):
             data = str(data)
         parent.add_paragraph(data)
 
-# Add YAML data to document
-add_dict_to_docx(yaml_data, document)
+# Endpoint to handle file conversion
+@app.route('/convert', methods=['POST'])
+def convert_yaml_to_docx():
+    if 'file' not in request.files:
+        return 'No file part', 400
 
-# Save the document in the same directory as the YAML file
-output_path = os.path.splitext(yaml_file)[0] + '.docx'
-document.save(output_path)
+    file = request.files['file']
+
+    if file.filename == '':
+        return 'No selected file', 400
+
+    if file and file.filename.endswith('.yaml'):
+        # Save the YAML file temporarily
+        file_path = os.path.join('/tmp', file.filename)
+        file.save(file_path)
+
+        # Load YAML data
+        with open(file_path, 'r') as f:
+            yaml_data = yaml.safe_load(f)
+
+        # Create DOCX document
+        document = Document()
+        document.add_heading('YAML to DOCX', 0)
+
+        # Add YAML data to DOCX
+        add_dict_to_docx(yaml_data, document)
+
+        # Save DOCX file temporarily
+        docx_file_path = os.path.splitext(file_path)[0] + '.docx'
+        document.save(docx_file_path)
+
+        # Send DOCX file as response
+        return send_file(docx_file_path, as_attachment=True, download_name=f'{file.filename.replace(".yaml", ".docx")}')
+
+    return 'Invalid file format', 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
