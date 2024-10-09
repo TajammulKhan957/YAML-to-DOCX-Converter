@@ -51,27 +51,36 @@ def convert_yaml_to_docx():
         return 'No selected file', 400
 
     if file and file.filename.endswith('.yaml'):
-        # Save the YAML file temporarily
-        file_path = os.path.join('/tmp', file.filename)
-        file.save(file_path)
+        try:
+            # Save the YAML file temporarily
+            file_path = os.path.join('/tmp', file.filename)
+            file.save(file_path)
 
-        # Load YAML data
-        with open(file_path, 'r') as f:
-            yaml_data = yaml.safe_load(f)
+            # Load YAML data
+            with open(file_path, 'r') as f:
+                yaml_data = yaml.safe_load(f)
 
-        # Create DOCX document
-        document = Document()
-        document.add_heading('YAML to DOCX', 0)
+            # Create DOCX document
+            document = Document()
+            document.add_heading('YAML to DOCX', 0)
 
-        # Add YAML data to DOCX
-        add_dict_to_docx(yaml_data, document)
+            # Add YAML data to DOCX
+            add_dict_to_docx(yaml_data, document)
 
-        # Save DOCX file temporarily
-        docx_file_path = os.path.splitext(file_path)[0] + '.docx'
-        document.save(docx_file_path)
+            # Save DOCX file temporarily
+            docx_file_path = os.path.splitext(file_path)[0] + '.docx'
+            document.save(docx_file_path)
 
-        # Send DOCX file as response
-        return send_file(docx_file_path, as_attachment=True, download_name=f'{file.filename.replace(".yaml", ".docx")}')
+            # Send DOCX file as response
+            return send_file(docx_file_path, as_attachment=True, download_name=f'{file.filename.replace(".yaml", ".docx")}')
+
+        except yaml.YAMLError as e:
+            print(f"YAML parsing error: {e}")
+            return 'Error parsing YAML file', 500
+
+        except Exception as e:
+            print(f"General error during conversion: {e}")
+            return 'Error during conversion process', 500
 
     return 'Invalid file format', 400
 
