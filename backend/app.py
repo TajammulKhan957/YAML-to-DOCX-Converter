@@ -5,7 +5,7 @@ from docx import Document
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/convert": {"origins": "https://yaml-to-docx-converter.vercel.app"}})
+CORS(app, resources={r"/convert": {"origins": "*"}})
 
 # Function to add YAML data to DOCX
 def add_dict_to_docx(data, parent):
@@ -76,4 +76,4 @@ def convert_yaml_to_docx():
     return 'Invalid file format', 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5001)
